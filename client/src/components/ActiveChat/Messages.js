@@ -5,10 +5,10 @@ import moment from 'moment';
 
 const Messages = (props) => {
   const { messages, otherUser, userId } = props;
-
+  console.log(messages.sort((a,b)=>parseInt(a.id) - parseInt(b.id)))
   return (
     <Box>
-      {messages.map((message) => {
+      {messages.sort((a,b)=>parseInt(a.id) - parseInt(b.id)).map((message) => {
         const time = moment(message.createdAt).format('h:mm');
 
         return message.senderId === userId ? (
