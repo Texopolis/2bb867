@@ -87,13 +87,13 @@ const Home = ({ user, logout }) => {
           convo.id = message.conversationId;
         }
       });
-      setConversations(prev=>[...prev]);
+      setConversations(conversations);
     },
     [setConversations, conversations],
   );
-  const addMessageToConversation = useCallback(async(data) => {
+  const addMessageToConversation = useCallback((data) => {
       // if sender isn't null, that means the message needs to be put in a brand new convo
-      const { message, sender = null } = await data;
+      const { message, sender = null } = data;
 
       if (sender !== null)  {
         const newConvo = {
@@ -111,9 +111,7 @@ const Home = ({ user, logout }) => {
           convo.latestMessageText = message.text;
         }
       });
-      setConversations(prev => {
-        return [...prev]
-      })
+      setConversations(conversations);
     },
     [setConversations, conversations],
   );
