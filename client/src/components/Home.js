@@ -62,9 +62,9 @@ const Home = ({ user, logout }) => {
     });
   };
 
-  const postMessage = (body) => {
+  const postMessage = async (body) => {
     try {
-      const data = saveMessage(body);
+      const data = await saveMessage(body);
 
       if (!body.conversationId) {
         addNewConvo(body.recipientId, data.message);
@@ -87,20 +87,21 @@ const Home = ({ user, logout }) => {
           convo.id = message.conversationId;
         }
       });
-      setConversations(conversations);
+      setConversations(prev=>[...prev]);
     },
     [setConversations, conversations],
   );
   const addMessageToConversation = useCallback(async(data) => {
       // if sender isn't null, that means the message needs to be put in a brand new convo
       const { message, sender = null } = await data;
-      if (sender !== null) {
+
+      if (sender !== null)  {
         const newConvo = {
           id: message.conversationId,
           otherUser: sender,
           messages: [message],
+          latestMessageText: message.text,
         };
-        newConvo.latestMessageText = message.text;
         setConversations((prev) => [...prev, newConvo]);
       }
 

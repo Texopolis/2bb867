@@ -5,7 +5,6 @@ import moment from 'moment';
 
 const Messages = (props) => {
   const { messages, otherUser, userId } = props;
-  console.log(messages.sort((a,b)=>parseInt(a.id) - parseInt(b.id)))
   return (
     <Box>
       {messages.sort((a,b)=>parseInt(a.id) - parseInt(b.id)).map((message) => {
