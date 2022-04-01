@@ -7,6 +7,8 @@ import { makeStyles } from "@material-ui/core/styles";
 import { SidebarContainer } from "../components/Sidebar";
 import { ActiveChat } from "../components/ActiveChat";
 import { SocketContext } from "../context/socket";
+import moment from 'moment';
+
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -78,6 +80,8 @@ const Home = ({ user, logout }) => {
     }
   };
 
+  // console.log(conversations)
+
   const addNewConvo = useCallback(
     (recipientId, message) => {
       conversations.forEach((convo) => {
@@ -87,10 +91,13 @@ const Home = ({ user, logout }) => {
           convo.id = message.conversationId;
         }
       });
-      setConversations(conversations);
+      setConversations((prev)=>{
+        return [...prev]
+      });
     },
     [setConversations, conversations],
   );
+
   const addMessageToConversation = useCallback((data) => {
       // if sender isn't null, that means the message needs to be put in a brand new convo
       const { message, sender = null } = data;
@@ -111,7 +118,9 @@ const Home = ({ user, logout }) => {
           convo.latestMessageText = message.text;
         }
       });
-      setConversations(conversations);
+      setConversations((prev)=>{
+        return [...prev]
+      });
     },
     [setConversations, conversations],
   );
@@ -182,6 +191,8 @@ const Home = ({ user, logout }) => {
     const fetchConversations = async () => {
       try {
         const { data } = await axios.get("/api/conversations");
+        data.forEach((convo)=>convo.messages.sort((a,b)=> moment(a.createdAt).diff(moment(b.createdAt))));
+        console.log("data", data)
         setConversations(data);
       } catch (error) {
         console.error(error);
