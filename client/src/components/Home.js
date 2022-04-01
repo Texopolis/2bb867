@@ -9,7 +9,6 @@ import { ActiveChat } from "../components/ActiveChat";
 import { SocketContext } from "../context/socket";
 import moment from 'moment';
 
-
 const useStyles = makeStyles((theme) => ({
   root: {
     height: "100vh",
@@ -80,8 +79,6 @@ const Home = ({ user, logout }) => {
     }
   };
 
-  // console.log(conversations)
-
   const addNewConvo = useCallback(
     (recipientId, message) => {
       conversations.forEach((convo) => {
@@ -92,8 +89,10 @@ const Home = ({ user, logout }) => {
         }
       });
       setConversations((prev)=>{
-        return [...prev]
-      });
+        return prev.map((convo) =>{
+          return convo.otherUser.id === convo.messages.senderId ? {...convo, latestMessageText: message.text} : {...convo}
+        }) 
+     });
     },
     [setConversations, conversations],
   );
@@ -111,7 +110,6 @@ const Home = ({ user, logout }) => {
         };
         setConversations((prev) => [...prev, newConvo]);
       }
-
       conversations.forEach((convo) => {
         if (convo.id === message.conversationId) {
           convo.messages.push(message);
@@ -119,7 +117,9 @@ const Home = ({ user, logout }) => {
         }
       });
       setConversations((prev)=>{
-        return [...prev]
+         return prev.map((convo) =>{
+           return convo.otherUser.id === convo.messages.senderId ? {...convo, latestMessageText: message.text} : {...convo}
+         }) 
       });
     },
     [setConversations, conversations],
@@ -192,7 +192,6 @@ const Home = ({ user, logout }) => {
       try {
         const { data } = await axios.get("/api/conversations");
         data.forEach((convo)=>convo.messages.sort((a,b)=> moment(a.createdAt).diff(moment(b.createdAt))));
-        console.log("data", data)
         setConversations(data);
       } catch (error) {
         console.error(error);
