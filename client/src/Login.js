@@ -90,8 +90,6 @@ const Login = ({ user, login }) => {
       </Box>
       <Grid
         container
-        spacing={0}
-        direction="column"
         justifyContent="center"
         alignItems="center"
         sx={{ minHeight: "100vh" }}
@@ -132,7 +130,6 @@ const Login = ({ user, login }) => {
           <form onSubmit={handleLogin}>
             <Grid
               style={{
-                // height: "400px",
                 marginTop: "100px",
                 display: "flex",
                 flexDirection: "column",
@@ -166,7 +163,7 @@ const Login = ({ user, login }) => {
                   variant="contained"
                   size="large"
                   color="primary"
-                  style={{ width: "150px", marginTop: "50px"}}
+                  style={{ width: "150px", marginTop: "50px" }}
                 >
                   Login
                 </Button>
