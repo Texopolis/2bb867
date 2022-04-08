@@ -1,6 +1,8 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import { FormControl, FilledInput } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
+import { IconButton, InputAdornment, TextField } from '@mui/material';
+import AddPhotoAlternateOutlinedIcon from '@mui/icons-material/AddPhotoAlternateOutlined';
 
 const useStyles = makeStyles(() => ({
   root: {
@@ -18,6 +20,7 @@ const useStyles = makeStyles(() => ({
 const Input = ({ otherUser, conversationId, user, postMessage }) => {
   const classes = useStyles();
   const [text, setText] = useState('');
+  const inputFile = useRef(null);
 
   const handleChange = (event) => {
     setText(event.target.value);
@@ -38,6 +41,13 @@ const Input = ({ otherUser, conversationId, user, postMessage }) => {
     setText('');
   };
 
+  const uploadImage = async()=>{
+    await inputFile.current.click()
+    console.log(inputFile)
+
+  }
+
+
   return (
     <form className={classes.root} onSubmit={handleSubmit}>
       <FormControl fullWidth hiddenLabel>
@@ -48,6 +58,17 @@ const Input = ({ otherUser, conversationId, user, postMessage }) => {
           value={text}
           name="text"
           onChange={handleChange}
+          endAdornment={
+            <InputAdornment position="end">
+              <IconButton onClick={uploadImage}>
+                <AddPhotoAlternateOutlinedIcon />
+                <input
+                  type="file"
+                  style={{ display:'none' }}
+                  ref={inputFile}/>
+              </IconButton>
+            </InputAdornment>
+          }
         />
       </FormControl>
     </form>

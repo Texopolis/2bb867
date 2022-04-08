@@ -45,6 +45,7 @@ const Home = ({ user, logout }) => {
 
     setConversations(newState);
   };
+  // console.log(conversations)
 
   const clearSearchedUsers = () => {
     setConversations((prev) => prev.filter((convo) => convo.id));
@@ -52,6 +53,7 @@ const Home = ({ user, logout }) => {
 
   const saveMessage = async (body) => {
     const { data } = await axios.post("/api/messages", body);
+    console.log(data)
     return data;
   };
 
