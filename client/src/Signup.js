@@ -9,8 +9,21 @@ import {
   TextField,
   FormHelperText,
 } from "@material-ui/core";
-import bgImage from "./images/bg-img.png";
-import bubble from "./images/bubble.svg";
+import useMediaQuery from "@mui/material/useMediaQuery";
+import {
+  overlayStyle,
+  sidebarBgImage,
+  sidebarContainer,
+  chatBubble,
+  sidebarText,
+  linkStyle,
+  formStyle,
+  topBtn,
+  bottomBtn,
+  formTitle,
+  topContainer,
+  formContent,
+} from "./loginSignupStyles/styles.js";
 
 const Signup = ({ user, register }) => {
   const history = useHistory();
@@ -37,118 +50,39 @@ const Signup = ({ user, register }) => {
     if (user && user.id) history.push("/home");
   }, [user, history]);
 
+  const matches = useMediaQuery("(min-width:700px)");
+
   return (
-    <Box sx={{ display: "flex" }}>
-      <Box
-        className="bgImage"
-        alt="Chat picture"
-        sx={{
-          height: "100vh",
-          width: "75%",
-          backgroundImage: `url(${bgImage})`,
-          backgroundSize: "cover",
-          position: "relative"
-        }}
-      >
-        <div
-          className="overlay"
-          style={{
-            backgroundColor: "rgba(58,141,255,.8)",
-            position: "absolute",
-            top: 0,
-            bottom: 0,
-            left: 0,
-            right: 0,
-          }}
-        ></div>
-        <div
-          className="leftContainer"
-          style={{
-            position: "absolute",
-            display: "flex",
-            flexDirection: "column",
-            textAlign: "center",
-            width: "75%",
-            left: "50%",
-            top: "40%",
-            transform: "translate(-50%, -50%)",
-          }}
-        >
-          <div
-            className="chatBubble"
-            style={{
-              backgroundImage: `url(${bubble})`,
-              backgroundSize: "cover",
-              height: "70px",
-              width: "70px",
-              marginBottom: "20px",
-              margin: "0 auto",
-            }}
-          ></div>
-          <div
-            className="tagText"
-            style={{
-              color: "white",
-              fontSize: "2em",
-              marginTop: "40px",
-            }}
-          >
-            Converse with anyone with any language
-          </div>
-        </div>
-      </Box>
+    <Box style={{ display: "flex" }}>
+      {matches && (
+        <Box alt="Chat picture" style={sidebarBgImage}>
+          <Box style={overlayStyle}></Box>
+          <Box style={sidebarContainer}>
+            <Box style={chatBubble}></Box>
+            <Box style={sidebarText}>
+              Converse with anyone with any language
+            </Box>
+          </Box>
+        </Box>
+      )}
       <Grid
         container
-        spacing={0}
-        direction="column"
         justifyContent="center"
         alignItems="center"
-        sx={{ minHeight: "100vh" }}
+        style={{ minHeight: "100vh" }}
       >
-        <Box
-          sx={{
-            width: "65%",
-            minHeight: "80vh",
-            flexDirection: "column",
-            p: "20px",
-          }}
-        >
-          <Grid
-            container
-            item
-            style={{
-              display: "flex",
-              width: "100%",
-              justifyContent: "right",
-              alignItems: "center",
-              marginTop: "30px",
-            }}
-          >
+        <Box style={formContent}>
+          <Grid container item style={topContainer}>
             <Typography color="secondary">Already have an account?</Typography>
-            <Link
-              href="/login"
-              to="/login"
-              style={{ textDecoration: "none", marginLeft: "20px" }}
-            >
-              <Button
-                color="primary"
-                style={{ boxShadow: "0px 4px 4px 0px #B0B0B0", width: "100px" }}
-              >
+            <Link href="/login" to="/login" style={linkStyle}>
+              <Button color="primary" style={topBtn}>
                 Login
               </Button>
             </Link>
           </Grid>
-          <form onSubmit={handleRegister}>
-            <Grid
-              style={{
-                height: "400px",
-                marginTop: "40px",
-                display: "flex",
-                flexDirection: "column",
-                justifyContent: "space-between",
-              }}
-            >
-              <Typography variant="h4" style={{ fontWeight: "bolder" }}>
+          <form onSubmit={handleRegister} style={{ lineHeight: "100px" }}>
+            <Grid style={formStyle}>
+              <Typography variant="h4" style={formTitle}>
                 Create an account.
               </Typography>
               <Grid>
@@ -215,7 +149,7 @@ const Signup = ({ user, register }) => {
                   variant="contained"
                   size="large"
                   color="primary"
-                  style={{ width: "150px" }}
+                  style={bottomBtn}
                 >
                   Create
                 </Button>
