@@ -27,7 +27,7 @@ const ChatContent = ({ conversation }) => {
 
   const latestMessageText = conversation.id && conversation.latestMessageText;
 
-  const lastText = latestMessageText ? latestMessageText : "Sent a photo";
+  const lastText = latestMessageText ? latestMessageText : conversation.id && "Sent a photo";
 
   return (
     <Box className={classes.root}>
