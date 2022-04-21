@@ -1,9 +1,10 @@
 import React, { useState, useRef } from "react";
-import { FormControl, FilledInput } from "@material-ui/core";
+import { FormControl, FilledInput, Box } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
 import { IconButton, InputAdornment } from "@mui/material";
 import AddPhotoAlternateOutlinedIcon from "@mui/icons-material/AddPhotoAlternateOutlined";
-import { Image } from "cloudinary-react";
+import SendIcon from "@mui/icons-material/Send";
+import { Image, Transformation } from "cloudinary-react";
 
 const useStyles = makeStyles(() => ({
   root: {
@@ -11,10 +12,20 @@ const useStyles = makeStyles(() => ({
     marginTop: 15,
   },
   input: {
-    height: 70,
+    height: "70px",
     backgroundColor: "#F4F6FA",
     borderRadius: 8,
     marginBottom: 20,
+  },
+  uploadImageContainer: {
+    backgroundColor: "#F4F6FA",
+    borderRadius: 8,
+    display: "flex",
+    flexWrap: "wrap",
+    justifyContent: "flex-end",
+  },
+  image: {
+    margin: "10px",
   },
 }));
 
@@ -22,7 +33,7 @@ const Input = ({ otherUser, conversationId, user, postMessage }) => {
   const classes = useStyles();
   const [text, setText] = useState("");
   const [uploadedImages, setUploadedImages] = useState([]);
-  const [imgUrl, setImgUrl]= useState([]);
+  const [imgUrl, setImgUrl] = useState([]);
   const inputFile = useRef(null);
 
   const handleChange = (event) => {
@@ -39,7 +50,7 @@ const Input = ({ otherUser, conversationId, user, postMessage }) => {
       recipientId: otherUser.id,
       conversationId,
       sender: conversationId ? null : user,
-      attachments: uploadedImages ? imgUrl : null,
+      attachments: uploadedImages ? imgUrl : "",
     };
     await postMessage(reqBody);
     setText("");
@@ -47,7 +58,7 @@ const Input = ({ otherUser, conversationId, user, postMessage }) => {
     setImgUrl([]);
   };
 
-  const onFileChange = async(e) => {
+  const onFileChange = async (e) => {
     e.preventDefault();
 
     const url = `https://api.cloudinary.com/v1_1/${process.env.REACT_APP_CLOUDNAME}/image/upload/`;
@@ -55,72 +66,76 @@ const Input = ({ otherUser, conversationId, user, postMessage }) => {
     const form = e.currentTarget.files;
     const fileInput = Array.from(form);
 
-    fileInput.forEach(async (uploadedFile)=>{
+    fileInput.forEach(async (uploadedFile) => {
       const formData = new FormData();
       formData.append("file", uploadedFile);
-      formData.append("upload_preset", process.env.REACT_APP_UPLOAD_PRESET)
+      formData.append("upload_preset", process.env.REACT_APP_UPLOAD_PRESET);
 
-      const res = await fetch(url,{
+      const res = await fetch(url, {
         method: "POST",
-        body:formData,
+        body: formData,
       });
       const data = await res.json();
-      setUploadedImages(prev=>[...prev, data]);
-      setImgUrl(prev=>[...prev, data.secure_url]);
-    })
+      setUploadedImages((prev) => [...prev, data]);
+      setImgUrl((prev) => [...prev, data.secure_url]);
+    });
   };
 
   const uploadImage = async () => {
     await inputFile.current.click();
   };
 
-// console.log(uploadedImages)
-// console.log(imgUrl)
-
   return (
     <>
-    <form className={classes.root} onSubmit={handleSubmit}>
-      
-      <FormControl fullWidth hiddenLabel>
-      <div>
-        {uploadedImages && 
-        uploadedImages.map((file)=>
-        <Image
-          key={file.public_id}
-          cloudName={process.env.REACT_APP_CLOUDNAME}
-          publicId={file.public_id}
-          width="100"
-          crop="scale"
-        />)}
-
-    </div>
-        <FilledInput
-          
-          classes={{ root: classes.input }}
-          disableUnderline
-          placeholder="Type something..."
-          value={text}
-          name="text"
-          onChange={handleChange}
-          endAdornment={
-            <InputAdornment position="end">
-              <IconButton onClick={uploadImage}>
-                <AddPhotoAlternateOutlinedIcon />
-                <input
-                  type="file"
-                  name="file"
-                  style={{ display: "none" }}
-                  onChange={onFileChange}
-                  ref={inputFile}
-                  multiple
-                />
-              </IconButton>
-            </InputAdornment>
-          }
-        />
-      </FormControl>
-    </form>
-    
+      <form className={classes.root} onSubmit={handleSubmit}>
+        <FormControl fullWidth hiddenLabel>
+          {uploadedImages && (
+            <Box className={classes.uploadImageContainer}>
+              {uploadedImages.map((file) => (
+                <Image
+                  className={classes.image}
+                  key={file.public_id}
+                  cloudName={process.env.REACT_APP_CLOUDNAME}
+                  publicId={file.public_id}
+                >
+                  <Transformation
+                    height="150"
+                    width="150"
+                    crop="lfill"
+                    radius="20"
+                  />
+                </Image>
+              ))}
+            </Box>
+          )}
+          <FilledInput
+            classes={{ root: classes.input }}
+            disableUnderline
+            placeholder="Type something..."
+            value={text}
+            name="text"
+            onChange={handleChange}
+            endAdornment={
+              <InputAdornment position="end">
+                <IconButton onClick={uploadImage}>
+                  <AddPhotoAlternateOutlinedIcon />
+                  <input
+                    type="file"
+                    name="file"
+                    style={{ display: "none" }}
+                    onChange={onFileChange}
+                    ref={inputFile}
+                    multiple
+                  />
+                </IconButton>
+                <IconButton type="submit">
+                  <SendIcon />
+                </IconButton>
+              </InputAdornment>
+            }
+          ></FilledInput>
+        </FormControl>
+      </form>
     </>
   );
 };

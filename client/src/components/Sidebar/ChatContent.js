@@ -24,7 +24,14 @@ const ChatContent = ({ conversation }) => {
   const classes = useStyles();
 
   const { otherUser } = conversation;
-  const latestMessageText = conversation.id && conversation.latestMessageText;
+
+  let latestMessageText;
+  const tempLatestText =
+    conversation.messages[conversation.messages.length - 1];
+
+  (tempLatestText.text === "") & (tempLatestText.attachments != null)
+    ? (latestMessageText = "Sent a Photo")
+    : (latestMessageText = conversation.id && conversation.latestMessageText);
 
   return (
     <Box className={classes.root}>
