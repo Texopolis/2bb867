@@ -25,13 +25,9 @@ const ChatContent = ({ conversation }) => {
 
   const { otherUser } = conversation;
 
-  let latestMessageText;
-  const tempLatestText =
-    conversation.messages[conversation.messages.length - 1];
+  const latestMessageText = conversation.id && conversation.latestMessageText;
 
-  (tempLatestText.text === "") & (tempLatestText.attachments != null)
-    ? (latestMessageText = "Sent a Photo")
-    : (latestMessageText = conversation.id && conversation.latestMessageText);
+  const lastText = latestMessageText ? latestMessageText : "Sent a photo";
 
   return (
     <Box className={classes.root}>
@@ -40,7 +36,7 @@ const ChatContent = ({ conversation }) => {
           {otherUser.username}
         </Typography>
         <Typography className={classes.previewText}>
-          {latestMessageText}
+          {lastText}
         </Typography>
       </Box>
     </Box>
