@@ -14,7 +14,7 @@ function ImageMessage(props) {
 
   return (
     <>
-      <img src={props.url} className={classes.image} alt="img message" />
+      <img src={props.url} className={classes.image} alt="" />
     </>
   );
 }

@@ -5,6 +5,7 @@ import { IconButton, InputAdornment } from "@mui/material";
 import AddPhotoAlternateOutlinedIcon from "@mui/icons-material/AddPhotoAlternateOutlined";
 import SendIcon from "@mui/icons-material/Send";
 import { Image, Transformation } from "cloudinary-react";
+import axios from "axios";
 
 const useStyles = makeStyles(() => ({
   root: {
@@ -26,6 +27,9 @@ const useStyles = makeStyles(() => ({
   },
   image: {
     margin: "10px",
+  },
+  inputBox: {
+    display: "none",
   },
 }));
 
@@ -68,14 +72,12 @@ const Input = ({ otherUser, conversationId, user, postMessage }) => {
 
     fileInput.forEach(async (uploadedFile) => {
       const formData = new FormData();
+      const instance = axios.create();
       formData.append("file", uploadedFile);
       formData.append("upload_preset", process.env.REACT_APP_UPLOAD_PRESET);
+      const res = await instance.post(url, formData);
+      const data = await res.data;
 
-      const res = await fetch(url, {
-        method: "POST",
-        body: formData,
-      });
-      const data = await res.json();
       setUploadedImages((prev) => [...prev, data]);
       setImgUrl((prev) => [...prev, data.secure_url]);
     });
@@ -122,7 +124,7 @@ const Input = ({ otherUser, conversationId, user, postMessage }) => {
                   <input
                     type="file"
                     name="file"
-                    style={{ display: "none" }}
+                    className={classes.inputBox}
                     onChange={onFileChange}
                     ref={inputFile}
                     multiple

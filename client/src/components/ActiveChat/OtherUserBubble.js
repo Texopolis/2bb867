@@ -37,10 +37,35 @@ const useStyles = makeStyles(() => ({
     justifyContent: "flex-start",
     flexWrap: "wrap",
   },
+  otherUserBubble: {
+    display: "flex",
+    flexDirection: "column",
+  },
 }));
 
 const OtherUserBubble = ({ text, time, otherUser, attachments }) => {
   const classes = useStyles();
+  const generateKey = (attachment) => {
+    return `${attachment}_${time}`;
+  };
+  const timeBubble = (
+    <Typography className={classes.usernameDate}>
+      {otherUser.username} {time}
+    </Typography>
+  );
+  const textBubble = text && (
+    <Box className={classes.bubble}>
+      <Typography className={classes.text}>{text}</Typography>
+    </Box>
+  );
+  const imgBubble = (
+    <Box className={classes.imgMessageContainer}>
+      {attachments &&
+        attachments.map((img) => {
+          return <ImgMessage key={generateKey(img)} url={img} />;
+        })}
+    </Box>
+  );
 
   return (
     <Box className={classes.root}>
@@ -49,20 +74,19 @@ const OtherUserBubble = ({ text, time, otherUser, attachments }) => {
         src={otherUser.photoUrl}
         className={classes.avatar}
       />
-      <Box style={{ display: "flex", flexDirection: "column" }}>
-        <Typography className={classes.usernameDate}>
-          {otherUser.username} {time}
-        </Typography>
-        <Box className={classes.imgMessageContainer}>
-          {attachments &&
-            attachments.map((img, id) => {
-              return <ImgMessage key={id} url={img} />;
-            })}
-        </Box>
-        {text && (
-          <Box className={classes.bubble}>
-            <Typography className={classes.text}>{text}</Typography>
-          </Box>
+      <Box className={classes.otherUserBubble}>
+        {attachments && attachments.length > 1 ? (
+          <>
+            {textBubble}
+            {imgBubble}
+            {timeBubble}
+          </>
+        ) : (
+          <>
+            {timeBubble}
+            {imgBubble}
+            {textBubble}
+          </>
         )}
       </Box>
     </Box>
