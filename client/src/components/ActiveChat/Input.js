@@ -56,10 +56,13 @@ const Input = ({ otherUser, conversationId, user, postMessage }) => {
       sender: conversationId ? null : user,
       attachments: uploadedImages ? imgUrl : "",
     };
-    await postMessage(reqBody);
-    setText("");
-    setUploadedImages([]);
-    setImgUrl([]);
+    if (reqBody.text === "" && reqBody.attachments.length === 0) return false;
+    else {
+      postMessage(reqBody);
+      setText("");
+      setUploadedImages([]);
+      setImgUrl([]);
+    }
   };
 
   const onFileChange = async (e) => {
@@ -70,23 +73,24 @@ const Input = ({ otherUser, conversationId, user, postMessage }) => {
     const form = e.currentTarget.files;
     const fileInput = Array.from(form);
 
-    fileInput.forEach(async (uploadedFile) => {
-      const formData = new FormData();
-      const instance = axios.create();
-      formData.append("file", uploadedFile);
-      formData.append("upload_preset", process.env.REACT_APP_UPLOAD_PRESET);
-      const res = await instance.post(url, formData);
-      const data = await res.data;
-
-      setUploadedImages((prev) => [...prev, data]);
-      setImgUrl((prev) => [...prev, data.secure_url]);
-    });
+    const data = await Promise.all(
+      fileInput.map(async (uploadedFile) => {
+        const formData = new FormData();
+        const instance = axios.create();
+        formData.append("file", uploadedFile);
+        formData.append("upload_preset", process.env.REACT_APP_UPLOAD_PRESET);
+        const res = await instance.post(url, formData);
+        const asyncData = await res.data;
+        setImgUrl((prev) => [...prev, asyncData.secure_url]);
+        return asyncData;
+      })
+    );
+    setUploadedImages((prev) => [...prev, ...data]);
   };
 
   const uploadImage = async () => {
     await inputFile.current.click();
   };
-
   return (
     <>
       <form className={classes.root} onSubmit={handleSubmit}>
@@ -96,7 +100,7 @@ const Input = ({ otherUser, conversationId, user, postMessage }) => {
               {uploadedImages.map((file) => (
                 <Image
                   className={classes.image}
-                  key={file.public_id}
+                  key={file.public_id + file.created_at}
                   cloudName={process.env.REACT_APP_CLOUDNAME}
                   publicId={file.public_id}
                 >
