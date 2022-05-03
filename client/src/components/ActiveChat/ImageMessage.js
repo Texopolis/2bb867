@@ -12,11 +12,7 @@ const useStyles = makeStyles(() => ({
 function ImageMessage(props) {
   const classes = useStyles();
 
-  return (
-    <>
-      <img src={props.url} className={classes.image} alt="" />
-    </>
-  );
+  return <img src={props.url} className={classes.image} alt="" />;
 }
 
 export default ImageMessage;

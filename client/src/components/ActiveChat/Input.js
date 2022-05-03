@@ -92,57 +92,55 @@ const Input = ({ otherUser, conversationId, user, postMessage }) => {
     await inputFile.current.click();
   };
   return (
-    <>
-      <form className={classes.root} onSubmit={handleSubmit}>
-        <FormControl fullWidth hiddenLabel>
-          {uploadedImages && (
-            <Box className={classes.uploadImageContainer}>
-              {uploadedImages.map((file) => (
-                <Image
-                  className={classes.image}
-                  key={file.public_id + file.created_at}
-                  cloudName={process.env.REACT_APP_CLOUDNAME}
-                  publicId={file.public_id}
-                >
-                  <Transformation
-                    height="150"
-                    width="150"
-                    crop="lfill"
-                    radius="20"
-                  />
-                </Image>
-              ))}
-            </Box>
-          )}
-          <FilledInput
-            classes={{ root: classes.input }}
-            disableUnderline
-            placeholder="Type something..."
-            value={text}
-            name="text"
-            onChange={handleChange}
-            endAdornment={
-              <InputAdornment position="end">
-                <IconButton onClick={uploadImage}>
-                  <AddPhotoAlternateOutlinedIcon />
-                  <input
-                    type="file"
-                    name="file"
-                    className={classes.inputBox}
-                    onChange={onFileChange}
-                    ref={inputFile}
-                    multiple
-                  />
-                </IconButton>
-                <IconButton type="submit">
-                  <SendIcon />
-                </IconButton>
-              </InputAdornment>
-            }
-          ></FilledInput>
-        </FormControl>
-      </form>
-    </>
+    <form className={classes.root} onSubmit={handleSubmit}>
+      <FormControl fullWidth hiddenLabel>
+        {uploadedImages && (
+          <Box className={classes.uploadImageContainer}>
+            {uploadedImages.map((file) => (
+              <Image
+                className={classes.image}
+                key={file.public_id + file.created_at}
+                cloudName={process.env.REACT_APP_CLOUDNAME}
+                publicId={file.public_id}
+              >
+                <Transformation
+                  height="150"
+                  width="150"
+                  crop="lfill"
+                  radius="20"
+                />
+              </Image>
+            ))}
+          </Box>
+        )}
+        <FilledInput
+          classes={{ root: classes.input }}
+          disableUnderline
+          placeholder="Type something..."
+          value={text}
+          name="text"
+          onChange={handleChange}
+          endAdornment={
+            <InputAdornment position="end">
+              <IconButton onClick={uploadImage}>
+                <AddPhotoAlternateOutlinedIcon />
+                <input
+                  type="file"
+                  name="file"
+                  className={classes.inputBox}
+                  onChange={onFileChange}
+                  ref={inputFile}
+                  multiple
+                />
+              </IconButton>
+              <IconButton type="submit">
+                <SendIcon />
+              </IconButton>
+            </InputAdornment>
+          }
+        ></FilledInput>
+      </FormControl>
+    </form>
   );
 };
 
