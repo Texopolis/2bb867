@@ -24,7 +24,10 @@ const ChatContent = ({ conversation }) => {
   const classes = useStyles();
 
   const { otherUser } = conversation;
+
   const latestMessageText = conversation.id && conversation.latestMessageText;
+
+  const lastText = latestMessageText ? latestMessageText : conversation.id && "Sent a photo";
 
   return (
     <Box className={classes.root}>
@@ -33,7 +36,7 @@ const ChatContent = ({ conversation }) => {
           {otherUser.username}
         </Typography>
         <Typography className={classes.previewText}>
-          {latestMessageText}
+          {lastText}
         </Typography>
       </Box>
     </Box>
